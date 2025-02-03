@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Look Lunatic - AI Fashion Revolution</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <img src="assets/logo.png" alt="Look Lunatic Logo">
+            </div>
+        </nav>
+        
+        <main>
+            <div class="left-section">
+                <h1>Welcome to Look Lunatic</h1>
+                <p class="tagline">Where AI meets Fashion Excellence</p>
+                <p class="subtitle">Discover your perfect style with our AI-powered fashion recommendations</p>
+            </div>
+
+            <div class="right-section">
+                <div class="auth-container">
+                    <div class="auth-tabs">
+                        <button class="tab-btn active" onclick="showLogin()">Login</button>
+                        <button class="tab-btn" onclick="showSignup()">Sign Up</button>
+                    </div>
+
+                    <form id="loginForm" class="auth-form">
+                        <h2>Welcome Back</h2>
+                        <div class="form-group">
+                            <input type="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="submit-btn">Login</button>
+                        <p class="form-footer">Don't have an account? <span onclick="showSignup()" class="link">Sign Up</span></p>
+                    </form>
+
+                    <form id="signupForm" class="auth-form hidden">
+                        <h2>Create Account</h2>
+                        <div class="form-group">
+                            <input type="text" placeholder="Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Confirm Password" required>
+                        </div>
+                        <button type="submit" class="submit-btn">Sign Up</button>
+                        <p class="form-footer">Already have an account? <span onclick="showLogin()" class="link">Login</span></p>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('signupForm').classList.add('hidden');
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.querySelectorAll('.tab-btn')[1].classList.remove('active');
+        }
+
+        function showSignup() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.remove('hidden');
+            document.querySelectorAll('.tab-btn')[0].classList.remove('active');
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        }
+    </script>
+</body>
+</html>
