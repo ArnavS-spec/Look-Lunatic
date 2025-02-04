@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Look Lunatic - AI Fashion Revolution</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <img src="assets/logo.png" alt="Look Lunatic Logo">
+            </div>
+        </nav>
+        
+        <main>
+            <div class="left-section">
+                <h1>Welcome to Look Lunatic</h1>
+                <p class="tagline">Where AI meets Fashion Excellence</p>
+                <p class="subtitle">Discover your perfect style with our AI-powered fashion recommendations</p>
+            </div>
+
+            <div class="right-section">
+                <div class="auth-container">
+                    <div class="auth-tabs">
+                        <button class="tab-btn active" onclick="showLogin()">Login</button>
+                        <button class="tab-btn" onclick="showSignup()">Sign Up</button>
+                    </div>
+
+                    <form id="loginForm" class="auth-form">
+                        <h2>Welcome Back</h2>
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="password" placeholder="Password" required>
+                        </div>
+                        <div class="error-message" id="loginError"></div>
+                        <button type="submit" class="submit-btn" id="loginButton">Login</button>
+                        <p class="form-footer">Don't have an account? <span onclick="showSignup()" class="link">Sign Up</span></p>
+                    </form>
+
+                    <form id="signupForm" class="auth-form hidden">
+                        <h2>Create Account</h2>
+                        <div class="form-group">
+                            <label for="fullname">Full Name</label>
+                            <input type="text" id="fullname" name="fullname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
+                        </div>
+                        <div class="error-message" id="signupError"></div>
+                        <button type="submit" class="submit-btn" id="signupButton">Sign Up</button>
+                        <p class="form-footer">Already have an account? <span onclick="showLogin()" class="link">Login</span></p>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // API URL configuration - use the same origin as the page
+        const API_BASE_URL = '';  // Empty string means same origin
+
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('signupForm').classList.add('hidden');
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.querySelectorAll('.tab-btn')[1].classList.remove('active');
+        }
+
+        function showSignup() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.remove('hidden');
+            document.querySelectorAll('.tab-btn')[0].classList.remove('active');
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        }
+
+        async function handleResponse(response) {
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Request failed');
+            }
+            return data;
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const errorDiv = document.getElementById('loginError');
+            const loginButton = document.getElementById('loginButton');
+            
+            try {
+                errorDiv.textContent = '';
+                loginButton.disabled = true;
+                loginButton.textContent = 'Logging in...';
+
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: this.email.value.trim(),
+                        password: this.password.value
+                    }),
+                    credentials: 'include'
+                });
+
+                const data = await handleResponse(response);
+                window.location.href = data.redirect;
+            } catch (error) {
+                errorDiv.textContent = error.message;
+            } finally {
+                loginButton.disabled = false;
+                loginButton.textContent = 'Login';
+            }
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const errorDiv = document.getElementById('signupError');
+            const signupButton = document.getElementById('signupButton');
+            
+            try {
+                errorDiv.textContent = '';
+                signupButton.disabled = true;
+                signupButton.textContent = 'Creating Account...';
+
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fullname: this.fullname.value.trim(),
+                        email: this.email.value.trim(),
+                        password: this.password.value
+                    }),
+                    credentials: 'include'
+                });
+
+                const data = await handleResponse(response);
+                window.location.href = data.redirect;
+            } catch (error) {
+                errorDiv.textContent = error.message;
+            } finally {
+                signupButton.disabled = false;
+                signupButton.textContent = 'Sign Up';
+            }
+        });
+
+        // Real-time password match validation
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        function validatePasswordMatch() {
+            if (confirmPasswordInput.value && passwordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordInput.setCustomValidity('Passwords do not match');
+            } else {
+                confirmPasswordInput.setCustomValidity('');
+            }
+        }
+
+        passwordInput.addEventListener('input', validatePasswordMatch);
+        confirmPasswordInput.addEventListener('input', validatePasswordMatch);
+    </script>
+</body>
+</html>
